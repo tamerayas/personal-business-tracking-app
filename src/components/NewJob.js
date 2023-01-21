@@ -25,8 +25,7 @@ function NewJob(props) {
 		}
 
 		const jobs = JSON.parse(localStorage.getItem('jobs')) || [];
-		const newValue = JSON.stringify([...jobs, { priority, jobName }]);
-		localStorage.setItem('jobs', newValue);
+		const newValue = JSON.stringify([...jobs, { id: Math.floor(Math.random() * 10000), priority, jobName }]);
 		setJobName("");
 		setPriority('Choose');
 		setJobData(JSON.parse(newValue));
