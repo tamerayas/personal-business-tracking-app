@@ -3,51 +3,48 @@ import HeaderLogo from '../components/HeaderLogo';
 import NewJob from '../components/NewJob';
 
 // Ant Design
-import { Col, Divider, Input, Row, Space, Table, Tag } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Button, Col, Divider, Input, Row, Space, Table, Tag } from 'antd';
+import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
 import PrioritySelect from '../components/PrioritySelect';
 
 const columns = [
   {
     title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
-    render: (text) => <a>{text}</a>,
+    dataIndex: 'jobName',
+    key: 'jobName',
+    width: '70%',
+    render: (text) => <span>{text}</span>,
   },
   {
     title: 'Priority',
     key: 'priority',
     dataIndex: 'priority',
-    render: (_, { tags }) => (
-      <React.Fragment>
-        {tags.map((tag) => {
-          let color = tag.length > 5 ? 'geekblue' : 'green';
-          if (tag === 'loser') {
-            color = 'volcano';
-          }
-          return (
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
-            </Tag>
-          );
-        })}
-      </React.Fragment>
-    ),
+    width: '20%',
+    render: (_, {priority}) => {
+      const color = priority === 'Urgent' ? '#3b5999' : priority === 'Regular' ? '#87d068' : '#108ee9'
+      return (
+        <React.Fragment>
+          <Tag color={color} >
+            {priority}
+          </Tag>
+        </React.Fragment>
+      )}
   },
   {
     title: 'Action',
     key: 'action',
-    render: (_, record) => (
+    width: '10%',
+    render: () => (
       <Space size="middle">
-        <a>Invite {record.name}</a>
-        <a>Delete</a>
+        <Button icon={<EditOutlined />}></Button>
+        <Button icon={<DeleteOutlined />}></Button>
       </Space>
     ),
   },
 ];
 
 function JobPage() {
-  const [jobs, setJobs] = useState([]);
+  const [jobs, setJobs] = useState(JSON.parse(localStorage.getItem('jobs')) || []);
 
   return (
     <React.Fragment>
@@ -55,7 +52,7 @@ function JobPage() {
         <HeaderLogo />
       </div>
       <Divider />
-      <NewJob />
+      <NewJob setJobData={(value) => setJobs(value)}/>
 
       <div className='job-wrapper' style={{ marginTop: 30 }}>
         <p className='title'>Job List</p>

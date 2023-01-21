@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { Select } from 'antd'
 
 const initialOptions = [
-  { value: 'Acil', label: 'Acil' },
-  { value: 'Önemli', label: 'Önemli' },
-  { value: 'Normal', label: 'Normal' },
+  { value: 'Urgent', label: 'Urgent' },
+  { value: 'Regular', label: 'Regular' },
+  { value: 'Trivial', label: 'Trivial' },
 ];
 
 function PrioritySelect(props) {
   const [options, setOptions] = useState(initialOptions);
   
-  const { defaultValue } = props;
+  const { defaultValue, handleSelect, priority } = props;
 
   useEffect(() => {
     if (defaultValue) {
@@ -24,9 +24,10 @@ function PrioritySelect(props) {
   return (
     <Select
       size='large'
+      value={priority}
       defaultValue={defaultValue ? defaultValue : 'Choose'}
       style={{ width: '100%' }}
-      // onChange={handleChange}
+      onChange={handleSelect}
       options={options}
     />
   )
