@@ -8,9 +8,9 @@ body {
 }
 
 .App {
-  background-color: #ffffff;
   // min-height: 100vh;
-  margin: 10px 50px 0 50px;
+  padding: 10px 50px 0 50px;
+  background-color: #ffffff;
 }
 
 .title {
@@ -72,4 +72,79 @@ body {
     background-color: lightblue;
     color: #76787b;
   }
+
+  &-modal {
+    &-title {
+      text-align: center;
+      font-weight: bold !important;
+    }
+
+    &-footer {
+      display: flex;
+      justify-content: center;
+
+      button {
+        width: 200px;
+      }
+
+      :nth-child(2) {
+        color: #ffffff;
+        background-color: #e83d6d;
+      }
+    }
+
+    &-confirm {
+      &-body {
+        display: block !important;
+
+        span {
+          display: block;
+          text-align: center;
+          margin-top: 10px;
+
+          svg {
+            color: #e83d6d;
+          }
+        }
+
+        &-wrapper {
+          width: 100%;
+        }
+
+        &-title {
+          display: flex;
+          flex: auto;
+        }
+      }
+
+      &-btns {
+        display: flex;
+        justify-content: center;
+  
+        button {
+          width: 40%;
+        }
+        :nth-child(2) {
+          color: #ffffff;
+          background-color: #e83d6d;
+        }
+      }
+    }
+  }
+
+  &-typography {
+    width: 500px;
+  }
+
+  &-space {
+    &-item {
+      button {
+        background-color: #e8e8e8;
+      }
+    }
+  }
+}
+
+.mt-10 {
+  margin-top: 10px;
 }

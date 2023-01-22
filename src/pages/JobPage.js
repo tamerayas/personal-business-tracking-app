@@ -1,20 +1,33 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import HeaderLogo from '../components/HeaderLogo';
 import NewJob from '../components/NewJob';
 import PrioritySelect from '../components/PrioritySelect';
 import EditModal from '../components/EditModal';
 
 // Ant Design
-import { Button, Col, Divider, Input, Modal, Row, Space, Table, Tag } from 'antd';
+import { Button, Col, Divider, Input, Modal, Row, Space, Table, Tag, Typography } from 'antd';
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled, SearchOutlined } from '@ant-design/icons';
+import sortJobs from '../utils/sortJobs';
 
 const { confirm } = Modal;
 
 
 function JobPage() {
-  const [jobs, setJobs] = useState(JSON.parse(localStorage.getItem('jobs')) || []);
+  const initialJobs = JSON.parse(localStorage.getItem('jobs')) || [];
+  const [jobs, setJobs] = useState(initialJobs);
+  const [totalCount, setTotalCount] = useState(jobs.length);
   const [isEditActive, setIsEditActive] = useState(false);
   const [selectedEditRecord, setSelectedEditRecord] = useState(null);
+  const [priority, setPriority] = useState('Choose');
+  const [paging, setPaging] = useState({
+    current: 1,
+    defaultPageSize: 5,
+    pageSize: 5
+  });
+  const [filterData, setFilterData] = useState({
+    priority: "all",
+    jobName: ""
+  });
 
   const columns = [
     {
@@ -22,7 +35,7 @@ function JobPage() {
       dataIndex: 'jobName',
       key: 'jobName',
       width: '70%',
-      render: (text) => <span>{text}</span>,
+      render: (text) => <Typography.Text key={text} ellipsis={true}>{text}</Typography.Text>,
     },
     {
       title: 'Priority',
@@ -32,7 +45,7 @@ function JobPage() {
       render: (_, { priority }) => {
         const color = priority === 'Urgent' ? '#3b5999' : priority === 'Regular' ? '#87d068' : '#108ee9'
         return (
-          <React.Fragment>
+          <React.Fragment key={priority}>
             <Tag color={color} >
               {priority}
             </Tag>
@@ -45,7 +58,7 @@ function JobPage() {
       key: 'action',
       width: '10%',
       render: (_, record) => (
-        <Space size="middle">
+        <Space size="middle" key={record.id}>
           <Button icon={<EditOutlined />} onClick={() => {
             setIsEditActive(true);
             setSelectedEditRecord(record);
@@ -64,9 +77,6 @@ function JobPage() {
       onOk() {
         handleDelete(id);
       },
-      onCancel() {
-        console.log('Cancel');
-      },
       okText: 'Approve',
       bodyStyle: {
         display: 'flex',
@@ -80,41 +90,105 @@ function JobPage() {
     const index = jobsCopy.findIndex(data => data.id === value);
     jobsCopy.splice(index, 1)
     setJobs(jobsCopy);
+    setLocalJobsData(jobsCopy);
+    setTotalCount(totalCount - 1);
+  };
+
+  const editRecord = value => {
+    const jobsCopy = [...jobs];
+    const selectedRecord = selectedEditRecord;
+
+    jobsCopy.find(data => data.id === selectedRecord.id).priority = value;
+    sortJobs(jobsCopy);
+    setJobs(jobsCopy);
+    setLocalJobsData(jobsCopy);
+    setIsEditActive(false);
   }
 
-  useEffect(() => {
+  const filterJobs = () => {
+    let filtered = [];
+    initialJobs.filter(job => {
+      const isJobNameMatched = job.jobName.toLowerCase().includes(filterData.jobName.toLowerCase());
+      const isPriorityMatched = filterData.priority=== 'all' || job.priority === filterData.priority;
+
+      if(isJobNameMatched && isPriorityMatched) {
+        filtered.push(job);
+      }
+
+      setJobs(filtered);
+      return filtered;
+
+    })
+  }
+
+  const setLocalJobsData = jobs => {
     localStorage.setItem('jobs', JSON.stringify(jobs));
-  }, [jobs]);
+  }
 
   return (
     <React.Fragment>
       {isEditActive &&
-        <EditModal handleCancel={() => setIsEditActive(false)} data={selectedEditRecord} />
+        <EditModal
+          handleCancel={() => setIsEditActive(false)}
+          data={selectedEditRecord}
+          editRecord={editRecord}
+          priority={selectedEditRecord.priority}
+        />
       }
       <div className='header'>
         <HeaderLogo />
       </div>
       <Divider />
-      <NewJob setJobData={(value) => setJobs(value)} />
+      <NewJob
+        setJobData={(value) => {
+          setJobs(value);
+          setTotalCount(totalCount + 1);
+          setLocalJobsData(value);
+        }}
+        priority={priority}
+        setPriorityData={(value) => setPriority(value)}
+      />
 
       <div className='job-wrapper' style={{ marginTop: 30 }}>
         <p className='title'>Job List</p>
       </div>
 
       <div className='list-count'>
-        <span>(3/3)</span>
+        <span>
+          ({paging.pageSize * paging.current > totalCount ? totalCount : paging.pageSize * paging.current}/{totalCount})
+        </span>
       </div>
       <div className='list-wrapper'>
         <Row gutter={[16, 16]} className='job-content'>
           <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-            <Input size="large" placeholder="Job Name" prefix={<SearchOutlined />} />
+            <Input
+              size="large"
+              placeholder="Job Name"
+              prefix={<SearchOutlined />}
+              onChange={(event) => {
+                setFilterData(Object.assign(filterData, { jobName: event.target.value }))
+                filterJobs();
+              }}
+            />
           </Col>
           <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-            <PrioritySelect defaultValue="all" />
+            <PrioritySelect
+              defaultValue="all"
+              handleSelect={(value) => {
+                setFilterData(Object.assign(filterData, { priority: value }))
+                filterJobs();
+              }}
+            />
           </Col>
         </Row>
       </div>
-      <Table columns={columns} dataSource={jobs} />
+      <Table
+        columns={columns}
+        dataSource={jobs}
+        scroll={{ x: 400 }}
+        pagination={{ defaultPageSize: 5 }}
+        onChange={(paging) => setPaging(paging)}
+      />
     </React.Fragment>
   )
 }
