@@ -8,7 +8,6 @@ body {
 }
 
 .App {
-  // min-height: 100vh;
   padding: 10px 50px 0 50px;
   background-color: #ffffff;
 }
@@ -23,18 +22,30 @@ body {
 .header {
   align-items: center;
 
+  &-wrapper {
+    display: flex;
+    align-items: center;
+  }
+
   &-title {
     font-size: 20px;
     text-transform: uppercase;
-    color: #1d39c4;
     font-weight: 600;
+    margin-left: 10px;
   }
 }
 
 .job {
   &-wrapper {
+    align-items: flex-end;
     display: flex;
+    justify-content: space-between;
     margin-top: 10px;
+
+    span {
+      font-size: 14px;
+      color: #a19f9f;
+    }
   }
 
   &-content {
@@ -43,14 +54,6 @@ body {
     label {
       color: #a19f9f;
     }
-  }
-}
-
-.list-count {
-  display: flex;
-  justify-content: flex-end;
-  span {
-    font-size: 14px;
   }
 }
 

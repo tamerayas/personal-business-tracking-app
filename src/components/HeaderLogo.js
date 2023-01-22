@@ -1,11 +1,12 @@
+import { GitlabOutlined } from '@ant-design/icons';
 import React from 'react'
 
 function HeaderLogo() {
   return (
-    <React.Fragment>
-      <img src='logo.svg' alt="logo" width={100} />
-      <span className='header-title'>Logo</span>
-    </React.Fragment>
+    <div className='header-wrapper'>
+      <GitlabOutlined style={{ fontSize: 50 }} />
+      <span className='header-title'>PERSONAL BUSINESS TRACKING APP</span>
+    </div>
   )
 }
 export default HeaderLogo;

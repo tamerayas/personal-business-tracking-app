@@ -34,14 +34,12 @@ function JobPage() {
       title: 'Name',
       dataIndex: 'jobName',
       key: 'jobName',
-      width: '70%',
       render: (text) => <Typography.Text key={text} ellipsis={true}>{text}</Typography.Text>,
     },
     {
       title: 'Priority',
       key: 'priority',
       dataIndex: 'priority',
-      width: '20%',
       render: (_, { priority }) => {
         const color = priority === 'Urgent' ? '#3b5999' : priority === 'Regular' ? '#87d068' : '#108ee9'
         return (
@@ -56,7 +54,6 @@ function JobPage() {
     {
       title: 'Action',
       key: 'action',
-      width: '10%',
       render: (_, record) => (
         <Space size="middle" key={record.id}>
           <Button icon={<EditOutlined />} onClick={() => {
@@ -109,9 +106,9 @@ function JobPage() {
     let filtered = [];
     initialJobs.filter(job => {
       const isJobNameMatched = job.jobName.toLowerCase().includes(filterData.jobName.toLowerCase());
-      const isPriorityMatched = filterData.priority=== 'all' || job.priority === filterData.priority;
+      const isPriorityMatched = filterData.priority === 'all' || job.priority === filterData.priority;
 
-      if(isJobNameMatched && isPriorityMatched) {
+      if (isJobNameMatched && isPriorityMatched) {
         filtered.push(job);
       }
 
@@ -151,9 +148,6 @@ function JobPage() {
 
       <div className='job-wrapper' style={{ marginTop: 30 }}>
         <p className='title'>Job List</p>
-      </div>
-
-      <div className='list-count'>
         <span>
           ({paging.pageSize * paging.current > totalCount ? totalCount : paging.pageSize * paging.current}/{totalCount})
         </span>
@@ -185,7 +179,7 @@ function JobPage() {
       <Table
         columns={columns}
         dataSource={jobs}
-        scroll={{ x: 400 }}
+        scroll={{ x:  300 }}
         pagination={{ defaultPageSize: 5 }}
         onChange={(paging) => setPaging(paging)}
       />
