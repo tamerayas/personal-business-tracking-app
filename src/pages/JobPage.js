@@ -1,19 +1,22 @@
 import React, { useState } from 'react'
+
+//components
 import HeaderLogo from '../components/HeaderLogo';
 import NewJob from '../components/NewJob';
 import PrioritySelect from '../components/PrioritySelect';
 import EditModal from '../components/EditModal';
+import sortJobs from '../utils/sortJobs';
+import setLocalJobs from '../utils/setLocalJobs';
 
 // Ant Design
 import { Button, Col, Divider, Input, Modal, Row, Space, Table, Tag, Typography } from 'antd';
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled, SearchOutlined } from '@ant-design/icons';
-import sortJobs from '../utils/sortJobs';
 
 const { confirm } = Modal;
 
-
 function JobPage() {
   const initialJobs = JSON.parse(localStorage.getItem('jobs')) || [];
+
   const [jobs, setJobs] = useState(initialJobs);
   const [totalCount, setTotalCount] = useState(jobs.length);
   const [isEditActive, setIsEditActive] = useState(false);
@@ -34,11 +37,13 @@ function JobPage() {
       title: 'Name',
       dataIndex: 'jobName',
       key: 'jobName',
-      render: (text) => <Typography.Text key={text} ellipsis={true}>{text}</Typography.Text>,
+      width: '70%',
+      render: (text) => <Typography.Text>{text}</Typography.Text>,
     },
     {
       title: 'Priority',
       key: 'priority',
+      width: '20%',
       dataIndex: 'priority',
       render: (_, { priority }) => {
         const color = priority === 'Urgent' ? '#3b5999' : priority === 'Regular' ? '#87d068' : '#108ee9'
@@ -54,8 +59,9 @@ function JobPage() {
     {
       title: 'Action',
       key: 'action',
+      width: '10%',
       render: (_, record) => (
-        <Space size="middle" key={record.id}>
+        <Space size="middle">
           <Button icon={<EditOutlined />} onClick={() => {
             setIsEditActive(true);
             setSelectedEditRecord(record);
@@ -87,7 +93,7 @@ function JobPage() {
     const index = jobsCopy.findIndex(data => data.id === value);
     jobsCopy.splice(index, 1)
     setJobs(jobsCopy);
-    setLocalJobsData(jobsCopy);
+    setLocalJobs(jobsCopy);
     setTotalCount(totalCount - 1);
   };
 
@@ -98,7 +104,7 @@ function JobPage() {
     jobsCopy.find(data => data.id === selectedRecord.id).priority = value;
     sortJobs(jobsCopy);
     setJobs(jobsCopy);
-    setLocalJobsData(jobsCopy);
+    setLocalJobs(jobsCopy);
     setIsEditActive(false);
   }
 
@@ -116,10 +122,6 @@ function JobPage() {
       return filtered;
 
     })
-  }
-
-  const setLocalJobsData = jobs => {
-    localStorage.setItem('jobs', JSON.stringify(jobs));
   }
 
   return (
@@ -140,7 +142,7 @@ function JobPage() {
         setJobData={(value) => {
           setJobs(value);
           setTotalCount(totalCount + 1);
-          setLocalJobsData(value);
+          setLocalJobs(value);
         }}
         priority={priority}
         setPriorityData={(value) => setPriority(value)}
@@ -160,7 +162,8 @@ function JobPage() {
               placeholder="Job Name"
               prefix={<SearchOutlined />}
               onChange={(event) => {
-                setFilterData(Object.assign(filterData, { jobName: event.target.value }))
+                let value = event.target.value;
+                setFilterData(Object.assign(filterData, { jobName: value }))
                 filterJobs();
               }}
             />
@@ -180,6 +183,7 @@ function JobPage() {
         columns={columns}
         dataSource={jobs}
         scroll={{ x:  300 }}
+        rowKey={data => data.id}
         pagination={{ defaultPageSize: 5 }}
         onChange={(paging) => setPaging(paging)}
       />

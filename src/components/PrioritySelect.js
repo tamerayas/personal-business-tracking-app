@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useLayoutEffect, useState } from 'react'
+
+//Ant Design
 import { Select } from 'antd'
 
 const initialOptions = [
@@ -12,7 +14,7 @@ function PrioritySelect(props) {
   
   const { defaultValue, handleSelect, priority } = props;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (defaultValue) {
       const optionsCopy = [...options];
       optionsCopy.unshift({ value: 'all', label: 'Priority (all)' })

@@ -45,6 +45,7 @@ body {
     span {
       font-size: 14px;
       color: #a19f9f;
+      margin-bottom: 2px;
     }
   }
 
@@ -61,6 +62,10 @@ body {
   padding: 10px;
   background-color: lightblue;
   margin-bottom: 2px;
+}
+
+.mt-10 {
+  margin-top: 10px;
 }
 
 // Antd
@@ -146,8 +151,4 @@ body {
       }
     }
   }
-}
-
-.mt-10 {
-  margin-top: 10px;
 }

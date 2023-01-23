@@ -1,10 +1,16 @@
 import React, { useState } from 'react'
-import { Input, Modal } from 'antd';
+
+//components
 import PrioritySelect from './PrioritySelect';
+
+//Ant Design
+import { Input, Modal } from 'antd';
+
 
 function EditModal(props) {
   const { handleCancel, data, editRecord, priority } = props;
   const [selectedPriority, setSelectedPriority] = useState(priority);
+
   return (
     <Modal
       title="Job Edit"
@@ -22,7 +28,11 @@ function EditModal(props) {
       <div className='mt-10'>
         <label>Job Priority</label>
       </div>
-      <PrioritySelect priority={selectedPriority} handleSelect={value => setSelectedPriority(value)} />
+      
+      <PrioritySelect
+        priority={selectedPriority}
+        handleSelect={value => setSelectedPriority(value)}
+      />
     </Modal>
   )
 }
